@@ -12,7 +12,7 @@ interface DataDao {
     fun insertComment(comment: DataEntity)
 
     /**
-     * Delete all how-tos in the database.
+     * Delete all data in the database.
      */
     @Query("DELETE FROM comment_table")
     suspend fun clearAll()

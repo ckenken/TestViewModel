@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -19,11 +20,7 @@ class DataBaseActivity : AppCompatActivity() {
 
     val edit by lazy { findViewById<EditText>(R.id.editMain) }
     val btnSave by lazy { findViewById<Button>(R.id.btnMainSave) }
-    val btnClear by lazy { findViewById<Button>(R.id.btnMainClear).apply {
-        setOnClickListener {
-            viewModel.clearAll()
-        }
-    } }
+    val btnClear by lazy { findViewById<Button>(R.id.btnMainClear) }
     val textResult by lazy { findViewById<TextView>(R.id.dataResult) }
 
     var index = 0
@@ -46,12 +43,20 @@ class DataBaseActivity : AppCompatActivity() {
             edit.text = null
         }
 
+        btnClear.setOnClickListener {
+            viewModel.clearAll()
+        }
+
         viewModel.comments.observe(this, {
+            Log.d("viewModel.comments", "inn")
             val sb = StringBuilder()
-            it.value?.forEach {  contentData ->
-                sb.append("${contentData.title} ${contentData.content}\n")
-            }
-            textResult.text = sb.toString()
+            it.observe(this,{ list ->
+                sb.clear()
+                list.forEach {  contentData ->
+                    sb.append("${contentData.title} ${contentData.content}\n")
+                }
+                textResult.text = sb.toString()
+            })
         })
     }
 }
